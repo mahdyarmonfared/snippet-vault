@@ -1,0 +1,8 @@
+# Dependencies
+node_modules/
+
+# Local data & OS files
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*

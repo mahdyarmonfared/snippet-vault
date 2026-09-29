@@ -1,0 +1,35 @@
+{
+  "name": "snippet-vault",
+  "version": "1.0.0",
+  "description": "Zero-dependency CLI code snippet manager, clipboard tool, and visual web studio.",
+  "main": "src/core/index.js",
+  "bin": {
+    "snip": "./bin/snippet-vault.js",
+    "snippet-vault": "./bin/snippet-vault.js"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "start": "node bin/snippet-vault.js ui",
+    "ls": "node bin/snippet-vault.js list"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mahdyarmonfared/snippet-vault.git"
+  },
+  "keywords": [
+    "snippet",
+    "cli",
+    "developer-tools",
+    "code-manager",
+    "clipboard",
+    "cheatsheet",
+    "productivity",
+    "bash-snippets",
+    "sql-snippets"
+  ],
+  "author": "Mahdyar Monfared",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
