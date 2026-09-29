@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SnippetVault Studio — Code & Command Manager</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-logo">📦</div>
+        <div class="brand-text">
+          <h1>SnippetVault <span class="badge version">v1.0.0</span></h1>
+          <p class="subtitle">Zero-Dependency Code Snippet & Command Studio</p>
+        </div>
+      </div>
+      
+      <div class="header-actions">
+        <button class="btn btn-secondary" id="btnExportMd">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          Export Markdown
+        </button>
+        <button class="btn btn-primary" id="btnOpenNewModal">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+          New Snippet
+        </button>
+      </div>
+    </header>
+
+    <!-- Stat Metric Cards -->
+    <section class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-title">Total Vault Snippets</span>
+        <span class="stat-value" id="statTotal">0</span>
+        <span class="stat-sub">Ready for instant copy</span>
+      </div>
+      <div class="stat-card stat-success">
+        <span class="stat-title">Favorites</span>
+        <span class="stat-value" id="statFavorites">0</span>
+        <span class="stat-sub">Starred code blocks</span>
+      </div>
+      <div class="stat-card stat-brand">
+        <span class="stat-title">Total Usage Executions</span>
+        <span class="stat-value" id="statUsage">0</span>
+        <span class="stat-sub">CLI & UI copy counts</span>
+      </div>
+      <div class="stat-card stat-warning">
+        <span class="stat-title">Unique Languages</span>
+        <span class="stat-value" id="statLanguages">0</span>
+        <span class="stat-sub">Bash, SQL, JS, Docker...</span>
+      </div>
+    </section>
+
+    <!-- Toolbar: Search & Filters -->
+    <div class="toolbar">
+      <div class="search-box">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" id="searchInput" placeholder="Search by name, command, tag, or language...">
+      </div>
+
+      <div class="filter-group">
+        <select id="langSelect" class="select-box">
+          <option value="">All Languages</option>
+          <option value="bash">Bash / Shell</option>
+          <option value="sql">SQL</option>
+          <option value="javascript">JavaScript</option>
+          <option value="python">Python</option>
+          <option value="docker">Docker</option>
+          <option value="json">JSON</option>
+          <option value="yaml">YAML</option>
+        </select>
+
+        <button class="btn btn-ghost" id="btnToggleFav">
+          <span id="favStarIcon">☆</span> Favorites Only
+        </button>
+      </div>
+    </div>
+
+    <!-- Tags Cloud -->
+    <div class="tags-cloud" id="tagsCloud">
+      <!-- Dynamic tag pills -->
+    </div>
+
+    <!-- Snippets Grid -->
+    <div class="snippets-grid" id="snippetsGrid">
+      <div class="loading-state">Loading snippet vault...</div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div>SnippetVault &bull; Zero External Dependencies &bull; Running on Node.js</div>
+      <div class="footer-links">
+        <a href="https://github.com/mahdyarmonfared/snippet-vault" target="_blank" rel="noopener">GitHub Repository</a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Modal for Create / Edit Snippet -->
+  <div class="modal-backdrop" id="snippetModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modalTitle">New Snippet</h3>
+        <button class="btn-close" id="btnCloseModal">&times;</button>
+      </div>
+      <form id="snippetForm" class="modal-body">
+        <input type="hidden" id="editSnippetId">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="snipName">Snippet Name (slug) *</label>
+            <input type="text" id="snipName" required placeholder="e.g. git-undo-commit">
+          </div>
+          <div class="form-group">
+            <label for="snipLang">Language</label>
+            <select id="snipLang" class="select-box">
+              <option value="bash">Bash / Shell</option>
+              <option value="sql">SQL</option>
+              <option value="javascript">JavaScript</option>
+              <option value="python">Python</option>
+              <option value="docker">Docker</option>
+              <option value="json">JSON</option>
+              <option value="yaml">YAML</option>
+              <option value="html">HTML</option>
+              <option value="css">CSS</option>
+              <option value="text">Plain Text</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="snipTitle">Human Title</label>
+          <input type="text" id="snipTitle" placeholder="e.g. Undo last git commit keeping changes">
+        </div>
+
+        <div class="form-group">
+          <label for="snipDescription">Description</label>
+          <input type="text" id="snipDescription" placeholder="Short description of what this command does">
+        </div>
+
+        <div class="form-group">
+          <label for="snipTags">Tags (comma separated)</label>
+          <input type="text" id="snipTags" placeholder="e.g. git, cli, undo">
+        </div>
+
+        <div class="form-group">
+          <label for="snipCode">Code Content *</label>
+          <textarea id="snipCode" required rows="6" spellcheck="false" placeholder="Paste your shell command or code block here..."></textarea>
+        </div>
+
+        <div class="form-row checkbox-row">
+          <label class="checkbox-label">
+            <input type="checkbox" id="snipFavorite"> Mark as Favorite (★)
+          </label>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btnCancelModal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Snippet</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
